@@ -13,7 +13,7 @@ class SignupScreen extends Component{
         }
     }
 
-    addAccount = () => {
+    signup = () => {
         //Validation here...
 
         return fetch("http://localhost:3333/api/1.0.0/user", {
@@ -71,7 +71,7 @@ class SignupScreen extends Component{
                 />
                 <Button
                     title="Create an account"
-                    onPress={() => this.addAccount()}
+                    onPress={() => this.signup()}
                 />
             </ScrollView>
         )

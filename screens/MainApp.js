@@ -2,9 +2,11 @@ import React, {Component} from 'react';
 import {View, Text, FlatList} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class HomeScreen extends Component {
+
+class AppScreen extends Component {
   constructor(props){
     super(props);
+
     this.state = {
       isLoading: true,
       listData: []
@@ -74,11 +76,15 @@ class HomeScreen extends Component {
     }else{
       return (
         <View>
-          <FlatList>
+          <FlatList
                 data={this.state.listData}
-                renderItem={({item}) => <Text>{item.first_name}{item.last_name}</Text>}
+                renderItem={({item}) => (
+                    <View>
+                      <Text>{item.user_givenname} {item.user_familyname}</Text>
+                    </View>
+                )}
                 keyExtractor={(item,index) => item.user_id.toString()}
-          </FlatList>
+              />
         </View>
       );
     }
@@ -88,4 +94,4 @@ class HomeScreen extends Component {
 
 
 
-export default HomeScreen;
+export default AppScreen;
