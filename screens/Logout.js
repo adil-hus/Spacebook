@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Text, ScrollView, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class HomeScreen extends Component{
+class InsideTabNavScreen extends Component{
     constructor(props){
         super(props);
 
@@ -63,14 +63,9 @@ class HomeScreen extends Component{
                     title="Get me out of here"
                     onPress={() => this.logout()}
                 />
-                <Button
-                    title="Take me back b xo"
-                    color="darkblue"
-                    onPress={() => this.props.navigation.navigate("Home")}
-                />
             </ScrollView>
         )
     }
 }
 
-export default HomeScreen;
+export default InsideTabNavScreen;
