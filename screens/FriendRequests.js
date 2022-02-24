@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {FlatList, Button, ScrollView} from 'react-native';
+import {FlatList, TouchableOpacity, Text, StyleSheet, View, ActivityIndicator} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class FriendRequestsScreen extends Component {
@@ -11,7 +11,7 @@ class FriendRequestsScreen extends Component {
     }
   }
 
-      getData = async () => {
+      getRequest = async () => {
         const value = await AsyncStorage.getItem('@session_token');
         return fetch("http://localhost:3333/api/1.0.0/friendrequests", {
               method: 'get',
@@ -32,16 +32,16 @@ class FriendRequestsScreen extends Component {
               this.setState({
                 isLoading: false,
                 listData: responseJson
-              })
+              });
+              console.log(this.state.listData);
             })
             .catch((error) => {
                 console.log(error);
             })
       }
 
-      add = async () => {
+      add = async (user_id) => {
         const value = await AsyncStorage.getItem('@session_token');
-        const user_id = await AsyncStorage.getItem('@user_id');
         return fetch("http://localhost:3333/api/1.0.0/friendrequests/" + user_id, {
           method: 'post',
           'headers': {
@@ -68,9 +68,8 @@ class FriendRequestsScreen extends Component {
             })
       }
 
-      delete = async () => {
+      delete = async (user_id) => {
         const value = await AsyncStorage.getItem('@session_token');
-        const user_id = await AsyncStorage.getItem('@user_id');
         return fetch("http://localhost:3333/api/1.0.0/friendrequests/" + user_id, {
           method: 'delete',
           'headers': {
@@ -102,7 +101,7 @@ class FriendRequestsScreen extends Component {
     this.unsubscribe = this.props.navigation.addListener('focus', () => {
       this.checkLoggedIn();
     });
-    this.getData();
+    this.getRequest();
   }
 
   componentWillUnmount() {
@@ -116,26 +115,53 @@ class FriendRequestsScreen extends Component {
     }
   };
 
-  render(){
-    return (
-        <ScrollView>
-              <FlatList
-                  data={this.state.listData}
-                  renderItem={({item}) => (
-                    <Text>
-                    </Text>
-                    )}
-              />
-            <Button
-                title="Add"
-                onPress={() => this.add()}
-            />
-            <Button
-                title="Delete"
-                onPress={() => this.delete()}
-            />
-        </ScrollView>
-    )
+    render() {
+      if (this.state.isLoading){
+        return (
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <ActivityIndicator/>
+            <Text>Loading..</Text>
+          </View>
+        );
+      }else{
+        return (
+        <View>
+          <FlatList
+            data={this.state.listData}
+            renderItem={({item}) => (
+                <View>      
+                  <Text>{"New request from " + item.first_name + " " + item.last_name}</Text>
+                  <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => this.add(item.user_id)}>
+                  <Text>Accept</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => this.delete(item.user_id)}>
+                  <Text>Reject</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+          />
+        </View>
+      )
+    }
   }
 }
+const styles = StyleSheet.create({
+  button: {
+    alignItems: "center",
+    backgroundColor: "#DDDDDD",
+    padding: 10
+},
+}
+)
+
 export default FriendRequestsScreen;
