@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, FlatList} from 'react-native';
+import {FlatList, Button, ScrollView} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class FriendRequestsScreen extends Component {
@@ -11,67 +11,91 @@ class FriendRequestsScreen extends Component {
     }
   }
 
-  getData = async () => {
-    const value = await AsyncStorage.getItem('@session_token');
-    return fetch("http://localhost:3333/api/1.0.0/friendrequests", {
+      getData = async () => {
+        const value = await AsyncStorage.getItem('@session_token');
+        return fetch("http://localhost:3333/api/1.0.0/friendrequests", {
+              method: 'get',
+              'headers': {
+              'X-Authorization':  value,
+              }
+            })
+            .then((response) => {
+                if(response.status === 200){
+                    return response.json()
+                }else if(response.status === 401){
+                  this.props.navigation.navigate("Login");
+                }else{
+                    throw 'Something went wrong';
+                }
+            })
+            .then((responseJson) => {
+              this.setState({
+                isLoading: false,
+                listData: responseJson
+              })
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+      }
+
+      add = async () => {
+        const value = await AsyncStorage.getItem('@session_token');
+        const user_id = await AsyncStorage.getItem('@user_id');
+        return fetch("http://localhost:3333/api/1.0.0/friendrequests/" + user_id, {
+          method: 'post',
           'headers': {
-            'X-Authorization':  value,
-            method: 'get'
-          }
-        })
-        .then((response) => {
-            if(response.status === 200){
-                return response.json()
-            }else if(response.status === 401){
-              this.props.navigation.navigate("Login");
-            }else{
-                throw 'Something went wrong';
-            }
-        })
-        .then((responseJson) => {
-          this.setState({
-            isLoading: false,
-            listData: responseJson
-          })
-        })
-        .catch((error) => {
-            console.log(error);
-        })
-  }
+          'X-Authorization':  value,
+              }
+            })
+            .then((response) => {
+                if(response.status === 200){
+                    return response.json()
+                }else if(response.status === 401){
+                  this.props.navigation.navigate("Login");
+                }else{
+                    throw 'Something went wrong';
+                }
+            })
+            .then((responseJson) => {
+              this.setState({
+                isLoading: false,
+                listData: responseJson
+              })
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+      }
 
-  add(user_id){
-    return fetch("http://localhost:3333/api/1.0.0/friendrequests/{user_id}" + user_id, {
-        method: 'post'
-      })
-      .then((response) => {
-          this.getData();
-      })
-      .then((response) => {
-
-        Alert.alert("Request accepted")
-
-      })
-      .catch((error) =>{
-        console.log(error);
-      });
-  }
-
-  delete(user_id){
-    return fetch("http://localhost:3333/api/1.0.0/friendrequests/{user_id}" + user_id, {
-        method: 'delete'
-      })
-      .then((response) => {
-          this.getData();
-      })
-      .then((response) => {
-
-        Alert.alert("Request deleted")
-
-      })
-      .catch((error) =>{
-        console.log(error);
-      });
-  }
+      delete = async () => {
+        const value = await AsyncStorage.getItem('@session_token');
+        const user_id = await AsyncStorage.getItem('@user_id');
+        return fetch("http://localhost:3333/api/1.0.0/friendrequests/" + user_id, {
+          method: 'delete',
+          'headers': {
+          'X-Authorization':  value,
+              }
+            })
+            .then((response) => {
+                if(response.status === 200){
+                    return response.json()
+                }else if(response.status === 401){
+                  this.props.navigation.navigate("Login");
+                }else{
+                    throw 'Something went wrong';
+                }
+            })
+            .then((responseJson) => {
+              this.setState({
+                isLoading: false,
+                listData: responseJson
+              })
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+      }
 
 
   componentDidMount() {
@@ -95,6 +119,13 @@ class FriendRequestsScreen extends Component {
   render(){
     return (
         <ScrollView>
+              <FlatList
+                  data={this.state.listData}
+                  renderItem={({item}) => (
+                    <Text>
+                    </Text>
+                    )}
+              />
             <Button
                 title="Add"
                 onPress={() => this.add()}

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {View, Text, FlatList, ActivityIndicator} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class FriendsListScreen extends Component {
+class SearchScreen extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -13,10 +13,10 @@ class FriendsListScreen extends Component {
     
       getData = async () => {
         const value = await AsyncStorage.getItem('@session_token');
-        return fetch("http://localhost:3333/api/1.0.0/user/{user_id}/friends", {
-              'headers': {
+        return fetch("http://localhost:3333/api/1.0.0/search", {
+                method: 'get',
+                'headers': {
                 'X-Authorization':  value,
-                method: 'get'
               }
             })
             .then((response) => {
@@ -58,7 +58,6 @@ class FriendsListScreen extends Component {
       };
     
       render() {
-    
         if (this.state.isLoading){
           return (
             <View
@@ -82,7 +81,6 @@ class FriendsListScreen extends Component {
                           <Text>{item.user_givenname} {item.user_familyname}</Text>
                         </View>
                     )}
-                    keyExtractor={(item,index) => item.user_id.toString()}
                   />
             </View>
           );
@@ -91,4 +89,4 @@ class FriendsListScreen extends Component {
       }
     }
 
-export default FriendsListScreen;
+export default SearchScreen;
