@@ -1,61 +1,61 @@
 import React, {Component} from 'react';
-import {View, Text, ActivityIndicator, FlatList, StyleSheet} from 'react-native';
+import {View, Text, ActivityIndicator, FlatList, StyleSheet, SafeAreaView} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class FriendsScreen extends Component {
     constructor(props){
-      super(props);
+        super(props);
   
-      this.state = {
-        isLoading: true,
-        listData: [],
+        this.state = {
+            isLoading: true,
+            listData: [],
       }
     }
 
     getAllFriends = async () => {
-      const value = await AsyncStorage.getItem('@session_token');
-      const user_id = await AsyncStorage.getItem('@user_id');
-      return fetch("http://localhost:3333/api/1.0.0/user/" + user_id + "/friends", {
-              method: 'get',
-              'headers': {
-              'X-Authorization':  value,
+        const value = await AsyncStorage.getItem('@session_token');
+        const user_id = await AsyncStorage.getItem('@user_id');
+        return fetch("http://localhost:3333/api/1.0.0/user/" + user_id + "/friends", {
+            method: 'get',
+            'headers': {
+            'X-Authorization':  value,
             }
-          })
-          .then((response) => {
+        })
+        .then((response) => {
             if(response.status === 200){
                 return response.json()
             }else if(response.status === 401){
-              this.props.navigation.navigate("Login");
+                this.props.navigation.navigate("Login");
             }else{
                 throw 'Something went wrong';
             }
         })
         .then((responseJson) => {
-          this.setState({
-            isLoading: false,
-            listData: responseJson
-          })
+            this.setState({
+                isLoading: false,
+                listData: responseJson
+        })
         })
         .catch((error) => {
-            console.log(error);
+                console.log(error);
         })
     }
 
     componentDidMount() {
-      this.unsubscribe = this.props.navigation.addListener('focus', () => {
+        this.unsubscribe = this.props.navigation.addListener('focus', () => {
         this.checkLoggedIn();
-      });
-      this.getAllFriends();
+    });
+        this.getAllFriends();
     }
 
     componentWillUnmount() {
-      this.unsubscribe();
+        this.unsubscribe();
     }
 
     checkLoggedIn = async () => {
-      const value = await AsyncStorage.getItem('@session_token');
-      if (value == null) {
-          this.props.navigation.navigate('Login');
+        const value = await AsyncStorage.getItem('@session_token');
+          if (value == null) {
+            this.props.navigation.navigate('Login');
       }
     };
 
@@ -75,31 +75,35 @@ class FriendsScreen extends Component {
         );
       }else{
         return (
-        <View>
-          <FlatList
-            data={this.state.listData}
-            renderItem={({item}) => (
-                  <Text>{item.user_givenname + " " + item.user_familyname}</Text>
+        <SafeAreaView style={styles.container}>
+          <View>
+            <FlatList
+              data={this.state.listData}
+              renderItem={({item}) => (
+              <Text style={styles.text1}>{item.user_givenname + " " + item.user_familyname}</Text>
               )}
-          />
-        </View>
+            />
+          </View>
+        </SafeAreaView>
       )
     }
   }
 }
 
-    const styles = StyleSheet.create({
-      button: {
-        alignItems: "center",
-        backgroundColor: "#DDDDDD",
-        padding: 10
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        paddingHorizontal: 10,
+        backgroundColor: 'midnightblue'
     },
-    input: {
-      padding:5, 
-      borderWidth:1, 
-      margin:5
+    text1: {
+        paddingVertical: 10,
+        textAlign: "center",
+        color: "white",
+        fontSize: 20,
+        fontWeight: "bold"
+        } 
     }
-  }
 )
 
   export default FriendsScreen;

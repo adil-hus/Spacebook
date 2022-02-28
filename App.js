@@ -23,7 +23,6 @@ function App() {
         <Stack.Screen name="Logout" component={LogoutScreen} />
       </Stack.Navigator>
     </NavigationContainer>
-    
   );
 }
 

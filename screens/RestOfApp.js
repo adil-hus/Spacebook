@@ -10,12 +10,12 @@ const Tab = createBottomTabNavigator();
 
 function RestOfAppScreen() {
   return (
-      <Tab.Navigator>
-        <Tab.Screen name="Search" component={SearchScreen} options={{headerShown:false}} />
-        <Tab.Screen name="Profile" component={ProfileScreen} options={{headerShown:false}} />        
-        <Tab.Screen name="Friend Requests" component={FriendRequestsScreen} />
-        <Tab.Screen name="Friends" component={FriendsScreen} />
-      </Tab.Navigator>
+    <Tab.Navigator>
+      <Tab.Screen name="Search" component={SearchScreen} options={{headerShown:false}} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />        
+      <Tab.Screen name="Friend Requests" component={FriendRequestsScreen} />
+      <Tab.Screen name="Friends" component={FriendsScreen} />
+    </Tab.Navigator>
   );
 }
 
