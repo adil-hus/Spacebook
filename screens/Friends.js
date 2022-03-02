@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, ActivityIndicator, FlatList, StyleSheet, SafeAreaView} from 'react-native';
+import {View, Text, ActivityIndicator, FlatList, StyleSheet, SafeAreaView, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class FriendsScreen extends Component {
@@ -41,6 +41,39 @@ class FriendsScreen extends Component {
         })
     }
 
+    sendToFriendAccount = async () => {
+      const value = await AsyncStorage.getItem('@session_token');
+      const user_id = await AsyncStorage.getItem('@user_id');
+      return fetch("http://localhost:3333/api/1.0.0/user/" + user_id + "/post", {
+          method: 'get',
+          'headers': {
+          'X-Authorization':  value,
+          }
+      })
+      .then((response) => {
+          if(response.status === 200){
+              return response.json()
+          }else if(response.status === 401){
+              this.props.navigation.navigate("Login");
+          }else{
+              throw 'Something went wrong';
+          }
+      })
+      .then((responseJson) => {
+        console.log("Send user to friend: ", responseJson);
+        this.props.navigation.navigate("ViewFriendPosts");
+      })
+      .then((responseJson) => {
+          this.setState({
+              isLoading: false,
+              listData: responseJson
+      })
+      })
+      .catch((error) => {
+              console.log(error);
+      })
+  }
+
     componentDidMount() {
         this.unsubscribe = this.props.navigation.addListener('focus', () => {
         this.checkLoggedIn();
@@ -80,7 +113,14 @@ class FriendsScreen extends Component {
             <FlatList
               data={this.state.listData}
               renderItem={({item}) => (
+              <View>
               <Text style={styles.text1}>{item.user_givenname + " " + item.user_familyname}</Text>
+              <TouchableOpacity
+                style={styles.button1}
+                onPress={() => this.sendToFriendAccount(item.user_id)}>
+                <Text style={styles.text1}>View</Text>
+              </TouchableOpacity>
+              </View>
               )}
             />
           </View>
@@ -102,7 +142,15 @@ const styles = StyleSheet.create({
         color: "white",
         fontSize: 20,
         fontWeight: "bold"
-        } 
+    },
+    button1: {
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingVertical: 12,
+            paddingHorizontal: 32,
+            borderRadius: 4,
+            backgroundColor: 'midnightblue'
+        }
     }
 )
 
