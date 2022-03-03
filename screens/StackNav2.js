@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import ViewFriendPostsScreen from './ViewFriendPosts';
-import FriendsScreen from './Friends';
 import HomeScreen from './Home';
 import ViewSinglePostScreen from './ViewSinglePost';
 
@@ -14,8 +12,6 @@ function StackNav2() {
       <Stack.Navigator>
         <Stack.Screen name="Home" component={HomeScreen} options={{headerShown:false}} />
         <Stack.Screen name="ViewSinglePost" component={ViewSinglePostScreen} options={{headerShown:false}} />
-        <Stack.Screen name="Friends" component={FriendsScreen} options={{headerShown:false}} />
-        <Stack.Screen name="ViewFriendPosts" component={ViewFriendPostsScreen} options={{headerShown:false}} />
       </Stack.Navigator>
  
   );

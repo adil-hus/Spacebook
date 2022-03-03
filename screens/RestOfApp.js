@@ -3,8 +3,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import SearchScreen from './Search';
 import FriendRequestsScreen from './FriendRequests';
-import AccountScreen from './Account';
 import StackNav2 from './StackNav2';
+import StackNav3 from './StackNav3';
+import StackNav4 from './StackNav4';
+
 
 const Tab = createBottomTabNavigator();
 
@@ -14,8 +16,8 @@ function RestOfAppScreen() {
       <Tab.Screen name="Home" component={StackNav2} />        
       <Tab.Screen name="Search" component={SearchScreen} options={{headerShown:false}} />
       <Tab.Screen name="Friend Requests" component={FriendRequestsScreen} />
-      <Tab.Screen name="Friends" component={StackNav2} />
-      <Tab.Screen name="Account" component={AccountScreen} />
+      <Tab.Screen name="Friends" component={StackNav4} />
+      <Tab.Screen name="Account" component={StackNav3} options={{headerShown:false}} />
     </Tab.Navigator>
   );
 }

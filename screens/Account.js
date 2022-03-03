@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, SafeAreaView, Text, ActivityIndicator, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
+import {View, SafeAreaView, Text, ActivityIndicator, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class AccountScreen extends Component {
@@ -9,6 +9,7 @@ class AccountScreen extends Component {
         this.state = {
           isLoading: true,
           listData: [],
+          photo: null,
           first_name: "",
           last_name: "",
           email: ""
@@ -42,6 +43,29 @@ class AccountScreen extends Component {
         .catch((error) => {
                 console.log(error);
         })
+    }
+
+    get_profile_image = async () => {
+      const value = await AsyncStorage.getItem('@session_token');
+      const user_id = await AsyncStorage.getItem('@user_id');
+      fetch("http://localhost:3333/api/1.0.0/user/" + user_id + "/photo", {
+        method: 'get',
+        headers: {
+          'X-Authorization': value
+        }
+      })
+      .then((res) => {
+        return res.blob();
+      })
+      .then((resBlob) => {
+        let data = URL.createObjectURL(resBlob);
+        this.setState({
+          photo: data,
+        });
+      })
+      .catch((err) => {
+        console.log("error", err)
+      });
     }
 
     updateUserInfo = async () => {
@@ -107,8 +131,10 @@ class AccountScreen extends Component {
     componentDidMount() {
         this.unsubscribe = this.props.navigation.addListener('focus', () => {
         this.checkLoggedIn();
+        this.get_profile_image();
     });
         this.getUserInfo();
+        this.get_profile_image();
     }
 
     componentWillUnmount() {
@@ -140,6 +166,21 @@ class AccountScreen extends Component {
       return (
           <SafeAreaView style={styles.container}>
             <View>
+          <Image
+            source={{
+              uri: this.state.photo,
+            }}
+            style={{
+              width: 100,
+              height: 100,
+              borderWidth: 5 
+            }}
+          />
+                    <TouchableOpacity
+                      style={styles.button1}
+                      onPress={() => this.props.navigation.navigate("Camera")}>
+                      <Text style={styles.text1}>Upload Profile Pic</Text>
+                    </TouchableOpacity>
                     <Text style={styles.text1}> First Name: {this.state.listData['first_name']}</Text>
                     <Text style={styles.text1}> Last Name: {this.state.listData['last_name']}</Text>
                     <Text style={styles.text1}> Email: {this.state.listData['email']}</Text>

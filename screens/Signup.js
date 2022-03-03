@@ -16,6 +16,11 @@ class SignupScreen extends Component{
     signup = () => {
         //Validation here...
 
+        if(this.state.password.length < 5){
+            alert("Password is too short, has to be 5 characters or more");
+            this.render();
+        }
+
         return fetch("http://localhost:3333/api/1.0.0/user", {
             method: 'POST',
             headers: {
@@ -74,6 +79,11 @@ class SignupScreen extends Component{
                         style={styles.button1}
                         onPress={() => this.signup()}>
                         <Text style={styles.text1}>Create account</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.button1}
+                        onPress={() => this.props.navigation.navigate("Login")}>
+                        <Text style={styles.text1}>Have you remembered your account details?</Text>
                     </TouchableOpacity>
                 </ScrollView>
             </SafeAreaView>
