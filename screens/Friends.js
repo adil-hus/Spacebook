@@ -41,10 +41,9 @@ class FriendsScreen extends Component {
         })
     }
 
-    sendToFriendAccount = async () => {
+    sendToFriendAccount = async (id) => {
       const value = await AsyncStorage.getItem('@session_token');
-      const user_id = await AsyncStorage.getItem('@user_id');
-      return fetch("http://localhost:3333/api/1.0.0/user/" + user_id + "/post", {
+      return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/post", {
           method: 'get',
           'headers': {
           'X-Authorization':  value,
@@ -77,6 +76,7 @@ class FriendsScreen extends Component {
     componentDidMount() {
         this.unsubscribe = this.props.navigation.addListener('focus', () => {
         this.checkLoggedIn();
+        this.getAllFriends();
     });
         this.getAllFriends();
     }
@@ -117,7 +117,7 @@ class FriendsScreen extends Component {
               <Text style={styles.text1}>{item.user_givenname + " " + item.user_familyname}</Text>
               <TouchableOpacity
                 style={styles.button1}
-                onPress={() => this.sendToFriendAccount(item.user_id)}>
+                onPress={() => this.props.navigation.navigate("ViewFriendPosts", {"friend_id": item.user_id})}>
                 <Text style={styles.text1}>View</Text>
               </TouchableOpacity>
               </View>

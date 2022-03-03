@@ -1,5 +1,3 @@
-// In App.js in a new project
-
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -8,7 +6,6 @@ import OpeningScreen from './screens/Opening';
 import LoginScreen from './screens/Login';
 import SignupScreen from './screens/Signup';
 import RestOfAppScreen from './screens/RestOfApp';
-import LogoutScreen from './screens/Logout';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,7 +17,6 @@ function App() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Signup" component={SignupScreen} />
         <Stack.Screen name="RestOfApp" component={RestOfAppScreen} options={{headerShown:false}}/>
-        <Stack.Screen name="Logout" component={LogoutScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,20 +1,23 @@
 import React, {Component} from 'react';
-import {View, SafeAreaView, Text, ActivityIndicator, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
+import {View, SafeAreaView, Text, ActivityIndicator, StyleSheet, FlatList, TouchableOpacity, TextInput} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class ViewFriendPostsScreen extends Component {
+class ViewSinglePostScreen extends Component {
     constructor(props){
         super(props);
     
         this.state = {
           isLoading: true,
           listData: [],
+          addPost: "",
+          amendPost: ""
         }
     }
 
-    getPosts = async (id) => {
+    getSinglePost = async () => {
         const value = await AsyncStorage.getItem('@session_token');
-        return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/post", {
+        const user_id = await AsyncStorage.getItem('@user_id');
+        return fetch("http://localhost:3333/api/1.0.0/user/" + user_id + "/post", {
             method: 'get',
             'headers': {
             'X-Authorization':  value,
@@ -40,60 +43,36 @@ class ViewFriendPostsScreen extends Component {
         })
     }
 
-    likePost = async (user_id, post_id) => {
-      const value = await AsyncStorage.getItem('@session_token');
-      return fetch("http://localhost:3333/api/1.0.0/user/" + user_id + "/post/" + post_id + "/like", {
-          method: 'post',
-          'headers': {
-          'X-Authorization':  value,
-          }
-      })
-      .then((response) => {
-          if(response.status === 200){
-            let { friend_id } = this.props.route.params;
-              this.getPosts(friend_id);
-          }else if(response.status === 401){
-            this.props.navigation.navigate("Login");
-          }else{
-              throw 'Something went wrong';
-          }
-      })
-      .catch((error) => {
+    updatePost = async (post_id, post) => {
+        const value = await AsyncStorage.getItem('@session_token');
+        const user_id = await AsyncStorage.getItem('@user_id');
+        return fetch("http://localhost:3333/api/1.0.0/user/" + user_id + "/post/" + post_id, {
+            method: 'PATCH',
+            headers: {
+            'X-Authorization':  value,
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({text:post})
+          })
+        .then((response) => {
+            if(response.status === 200){
+                this.getSinglePost();
+            }else if(response.status === 401){
+                this.props.navigation.navigate("Login");
+            }else{
+                throw 'Something went wrong';
+            }
+        })
+        .catch((error) => {
               console.log(error);
-      })
-  }
-
-  removeLikeFromPost = async (user_id, post_id) => {
-    const value = await AsyncStorage.getItem('@session_token');
-    return fetch("http://localhost:3333/api/1.0.0/user/" + user_id + "/post/" + post_id + "/like", {
-        method: 'delete',
-        'headers': {
-        'X-Authorization':  value,
-        }
-    })
-    .then((response) => {
-        if(response.status === 200){
-          let { friend_id } = this.props.route.params;
-            this.getPosts(friend_id);
-        }else if(response.status === 401){
-          this.props.navigation.navigate("Login");
-        }else{
-            throw 'Something went wrong';
-        }
-    })
-    .catch((error) => {
-            console.log(error);
-    })
-}
+        })
+    }
 
     componentDidMount() {
         this.unsubscribe = this.props.navigation.addListener('focus', () => {
-          let { friend_id } = this.props.route.params;
         this.checkLoggedIn();
-        this.getPosts(friend_id);
     });
-    let { friend_id } = this.props.route.params;
-        this.getPosts(friend_id);
+    this.getSinglePost();
     }
 
     componentWillUnmount() {
@@ -129,19 +108,21 @@ class ViewFriendPostsScreen extends Component {
                   data={this.state.listData}
                   renderItem={({item}) => (
                   <View>
-                  <Text style={styles.text1}>{item.timestamp + '\n' + "New post from: " + item.author.first_name + " " + 
-                    item.author.last_name + " \n" + item.text + '\n' + "Likes: " + item.numLikes}
-                  </Text>
-                  <TouchableOpacity
+                    <Text style={styles.text1}>
+                      {item.timestamp + '\n' + "New post from: " + item.author.first_name + " " + 
+                      item.author.last_name + " \n" + item.text + '\n' + "Likes: " + item.numLikes}
+                    </Text>
+                    <TextInput
+                      style={styles.inputText1}
+                      placeholder="Update your post..."
+                      onChangeText={(amendPost) => this.setState({amendPost})}
+                      value={this.state.amendPost}
+                    />
+                    <TouchableOpacity
                       style={styles.button1}
-                      onPress={() => this.likePost(item.author.user_id, item.post_id)}>
-                    <Text style={styles.text1}>Like</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                      style={styles.button1}
-                      onPress={() => this.removeLikeFromPost(item.author.user_id, item.post_id)}>
-                    <Text style={styles.text1}>Unlike</Text>
-                  </TouchableOpacity>
+                      onPress={() => this.updatePost(item.post_id, this.state.amendPost)}>
+                      <Text style={styles.text1}>Update</Text>
+                    </TouchableOpacity>
                   </View>
                   )}
                 />
@@ -173,9 +154,17 @@ const styles = StyleSheet.create({
             paddingHorizontal: 32,
             borderRadius: 4,
             backgroundColor: 'midnightblue'
-        }
+        },
+        inputText1: {
+            color: "white",
+            fontSize: 20,
+            fontWeight: "bold",
+            padding:5, 
+            borderWidth:1, 
+            margin:5
+            }
     }
 )
 
-  export default ViewFriendPostsScreen;
+  export default ViewSinglePostScreen;
 

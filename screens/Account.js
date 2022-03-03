@@ -77,6 +77,33 @@ class AccountScreen extends Component {
         })
     }
 
+    logout = async () => {
+      let token = await AsyncStorage.getItem('@session_token');
+      await AsyncStorage.removeItem('@session_token');
+      return fetch("http://localhost:3333/api/1.0.0/logout", {
+          method: 'post',
+          headers: {
+              "X-Authorization": token
+          }
+      })
+      .then((response) => {
+          if(response.status === 200){
+              this.props.navigation.navigate("Login");
+          }else if(response.status === 401){
+              this.props.navigation.navigate("Login");
+          }else{
+              throw 'Something went wrong';
+          }
+        })
+        .then((responseJson) => {
+            console.log("User logged out: ", responseJson);
+            this.props.navigation.navigate("Opening");
+        })
+        .catch((error) => {
+              console.log(error);
+      })
+  }
+
     componentDidMount() {
         this.unsubscribe = this.props.navigation.addListener('focus', () => {
         this.checkLoggedIn();
@@ -138,6 +165,11 @@ class AccountScreen extends Component {
                       style={styles.button1}
                       onPress={() => this.updateUserInfo()}>
                       <Text style={styles.text1}>Update</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.button1}
+                      onPress={() => this.logout()}>
+                      <Text style={styles.text1}>Log out</Text>
                     </TouchableOpacity>
             </View>
           </SafeAreaView>

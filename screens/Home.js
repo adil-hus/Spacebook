@@ -68,6 +68,28 @@ class HomeScreen extends Component {
         })
     }
 
+    likePost = async (user_id, post_id) => {
+      const value = await AsyncStorage.getItem('@session_token');
+      return fetch("http://localhost:3333/api/1.0.0/user/" + user_id + "/post/" + post_id + "/like", {
+          method: 'post',
+          'headers': {
+          'X-Authorization':  value,
+          }
+      })
+      .then((response) => {
+          if(response.status === 200){
+              return response.json()
+          }else if(response.status === 401){
+            this.props.navigation.navigate("Login");
+          }else{
+              throw 'Something went wrong';
+          }
+      })
+      .catch((error) => {
+              console.log(error);
+      })
+  }
+
     updatePost = async (post_id, post) => {
         const value = await AsyncStorage.getItem('@session_token');
         const user_id = await AsyncStorage.getItem('@user_id');
@@ -169,9 +191,20 @@ class HomeScreen extends Component {
                 data={this.state.listData}
                 renderItem={({item}) => (
                   <View>                   
-                    <Text style={styles.text1}>{item.timestamp + '\n' + "New post from: " + item.author.first_name + " " + 
-                    item.author.last_name + " \n" + item.text + '\n' + "Likes: " + item.numLikes}
+                    <Text style={styles.text1}>
+                      {item.timestamp + '\n' + "New post from: " + item.author.first_name + " " + 
+                      item.author.last_name + " \n" + item.text + '\n' + "Likes: " + item.numLikes}
                     </Text>
+                    <TouchableOpacity
+                      style={styles.button1}
+                      onPress={() => this.props.navigation.navigate("ViewSinglePost", {"user_id": item.user_id})}>
+                      <Text style={styles.text1}>View</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.button1}
+                      onPress={() => this.likePost(item.author.user_id, item.post_id)}>
+                      <Text style={styles.text1}>Like</Text>
+                    </TouchableOpacity>
                     <TextInput
                       style={styles.inputText1}
                       placeholder="Update your post..."
