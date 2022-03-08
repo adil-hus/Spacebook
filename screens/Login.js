@@ -14,7 +14,18 @@ class LoginScreen extends Component{
 
     login = async () => {
 
-        //Validation here...
+        if(this.state.email.match(/^\w+([.-]?\w+)@\w+([.-]?\w+)(.\w{2,3})+$/)){
+            //email is valid
+        }
+        else{
+            alert("Email is not valid.");
+            return false;
+        }
+
+        if(this.state.password.length < 6){
+            alert("Password is too short, has to be 6 characters or more");
+            return false;
+        }    
 
         return fetch("http://localhost:3333/api/1.0.0/login", {
             method: 'post',
@@ -28,6 +39,8 @@ class LoginScreen extends Component{
                 return response.json()
             }else if(response.status === 400){
                 throw 'Invalid email or password';
+            }else if(response.status === 500){
+                throw 'Server Error';
             }else{
                 throw 'Something went wrong';
             }

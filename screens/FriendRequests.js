@@ -22,11 +22,13 @@ class FriendRequestsScreen extends Component {
 				})
 				.then((response) => {
 						if(response.status === 200){
-								return response.json()
+							return response.json()
 						}else if(response.status === 401){
-								this.props.navigation.navigate("Login");
+							this.props.navigation.navigate("Login");
+						}else if(response.status === 500){
+							throw 'Server Error';
 						}else{
-								throw 'Something went wrong';
+							throw 'Something went wrong';
 						}
 				})
 				.then((responseJson) => {
@@ -54,6 +56,10 @@ class FriendRequestsScreen extends Component {
 								return response.json()
 						}else if(response.status === 401){
 								this.props.navigation.navigate("Login");
+						}else if(response.status === 404){
+								throw 'Not Found';
+						}else if(response.status === 500){
+								throw 'Server Error';
 						}else{
 								throw 'Something went wrong';
 						}
@@ -82,6 +88,10 @@ class FriendRequestsScreen extends Component {
 								return response.json()
 						}else if(response.status === 401){
 								this.props.navigation.navigate("Login");
+						}else if(response.status === 404){
+								throw 'Not Found';
+						}else if(response.status === 500){
+								throw 'Server Error';
 						}else{
 								throw 'Something went wrong';
 						}

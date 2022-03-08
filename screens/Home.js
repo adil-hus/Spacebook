@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, SafeAreaView, Text, ActivityIndicator, FlatList, StyleSheet, TouchableOpacity, TextInput} from 'react-native';
+import {View, SafeAreaView, Text, ActivityIndicator, FlatList, StyleSheet, TouchableOpacity, TextInput, ScrollView} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class HomeScreen extends Component {
@@ -28,6 +28,12 @@ class HomeScreen extends Component {
                 return response.json()
             }else if(response.status === 401){
               this.props.navigation.navigate("Login");
+            }else if(response.status === 403){
+              throw 'Can only view the posts of yourself or your friends';
+            }else if(response.status === 404){
+              throw 'Not Found';
+            }else if(response.status === 500){
+              throw 'Server Error';
             }else{
                 throw 'Something went wrong';
             }
@@ -59,6 +65,10 @@ class HomeScreen extends Component {
                 this.getAllPosts();
             }else if(response.status === 401){
                 this.props.navigation.navigate("Login");
+              }else if(response.status === 404){
+                throw 'Not Found';
+              }else if(response.status === 500){
+                throw 'Server Error';
             }else{
                 throw 'Something went wrong';
             }
@@ -81,6 +91,12 @@ class HomeScreen extends Component {
               return response.json()
           }else if(response.status === 401){
             this.props.navigation.navigate("Login");
+          }else if(response.status === 403){
+            throw 'Forbidden - you have already liked this post';
+          }else if(response.status === 404){
+            throw 'Not Found';
+          }else if(response.status === 500){
+            throw 'Server Error';           
           }else{
               throw 'Something went wrong';
           }
@@ -104,8 +120,16 @@ class HomeScreen extends Component {
         .then((response) => {
             if(response.status === 200){
                 this.getAllPosts();
+            }else if(response.status === 400){
+                throw 'Bad Request';
             }else if(response.status === 401){
-                this.props.navigation.navigate("Login");
+              this.props.navigation.navigate("Login");
+            }else if(response.status === 403){
+              throw 'Forbidden - you can only update your own posts';
+            }else if(response.status === 404){
+              throw 'Not Found';
+            }else if(response.status === 500){
+              throw 'Server Error';            
             }else{
                 throw 'Something went wrong';
             }
@@ -128,7 +152,13 @@ class HomeScreen extends Component {
             if(response.status === 200){
                 this.getAllPosts();
             }else if(response.status === 401){
-                this.props.navigation.navigate("Login");
+              this.props.navigation.navigate("Login");
+            }else if(response.status === 403){
+              throw 'Forbidden - you can only delete your own posts';
+            }else if(response.status === 404){
+              throw 'Not Found';
+            }else if(response.status === 500){
+              throw 'Server Error';            
             }else{
                 throw 'Something went wrong';
             }
@@ -174,7 +204,7 @@ class HomeScreen extends Component {
     }else{
       return (
           <SafeAreaView style={styles.container}>
-            <View>
+            <ScrollView>
               <View>
                 <TextInput
                   style={styles.inputText1}
@@ -225,7 +255,7 @@ class HomeScreen extends Component {
                   </View>
                 )}
               />
-            </View>
+            </ScrollView>
           </SafeAreaView>
       )
     }
@@ -240,13 +270,11 @@ const styles = StyleSheet.create({
   },
   button1: {
       justifyContent: 'center',
-      paddingVertical: 12,
-      paddingHorizontal: 32,
       borderRadius: 4,
       backgroundColor: 'midnightblue'
   },
   text1: {
-      paddingVertical: 20,
+      paddingVertical: 5,
       textAlign: "center",
       color: "white",
       fontSize: 20,

@@ -24,8 +24,12 @@ class SearchScreen extends Component {
         .then((response) => {
             if(response.status === 200){
                 return response.json();
+            }else if(response.status === 400){
+                throw 'Bad Request';
             }else if(response.status === 401){
                 this.props.navigation.navigate("Login");
+            }else if(response.status === 500){
+                throw 'Server Error';
             }else{
                 throw 'Something went wrong';
             }
@@ -54,6 +58,12 @@ class SearchScreen extends Component {
                 return response.json()
             }else if(response.status === 401){
                 this.props.navigation.navigate("Login");
+            }else if(response.status === 403){
+                throw 'User is already added as a friend';
+            }else if(response.status === 404){
+                throw 'Not Found';
+            }else if(response.status === 500){
+                throw 'Server Error';
             }else{
                 throw 'Something went wrong';
             }
@@ -164,11 +174,10 @@ const styles = StyleSheet.create({
     button2: {
             alignItems: 'center',
             justifyContent: 'center',
-            paddingVertical: 12,
+            paddingVertical: 5,
             paddingHorizontal: 32,
-            borderRadius: 4,
-            backgroundColor: 'midnightblue',
-            borderWidth:1, 
+            borderRadius: 2,
+            backgroundColor: 'midnightblue'
     },
     text1: {
             paddingVertical: 5,

@@ -30,6 +30,10 @@ class AccountScreen extends Component {
                 return response.json()
             }else if(response.status === 401){
               this.props.navigation.navigate("Login");
+            }else if(response.status === 404){
+              throw 'Not Found';
+            }else if(response.status === 500){
+              throw 'Server Error';
             }else{
                 throw 'Something went wrong';
             }
@@ -69,6 +73,15 @@ class AccountScreen extends Component {
     }
 
     updateUserInfo = async () => {
+
+        if(this.state.email.match(/^\w+([.-]?\w+)@\w+([.-]?\w+)(.\w{2,3})+$/)){
+            //email is valid
+        }
+        else{
+            alert("Email is not valid.");
+            return false;
+        }
+
         const value = await AsyncStorage.getItem('@session_token');
         const user_id = await AsyncStorage.getItem('@user_id');
         return fetch("http://localhost:3333/api/1.0.0/user/" + user_id, {
@@ -86,8 +99,16 @@ class AccountScreen extends Component {
         .then((response) => {
             if(response.status === 200){
                 this.getUserInfo();
-            }else if(response.status === 401){
+            }else if(response.status === 400){
                 this.props.navigation.navigate("Login");
+            }else if(response.status === 401){
+                throw 'Unauthorised';
+            }else if(response.status === 403){
+                throw 'Forbidden';
+            }else if(response.status === 404){
+                throw 'Not Found';
+            }else if(response.status === 500){
+                throw 'Server Error';
             }else{
                 throw 'Something went wrong';
             }
@@ -115,6 +136,8 @@ class AccountScreen extends Component {
               this.props.navigation.navigate("Login");
           }else if(response.status === 401){
               this.props.navigation.navigate("Login");
+          }else if(response.status === 500){
+              throw 'Server Error';
           }else{
               throw 'Something went wrong';
           }
@@ -166,16 +189,16 @@ class AccountScreen extends Component {
       return (
           <SafeAreaView style={styles.container}>
             <View>
-          <Image
-            source={{
-              uri: this.state.photo,
-            }}
-            style={{
-              width: 100,
-              height: 100,
-              borderWidth: 5 
-            }}
-          />
+              <Image
+                source={{
+                  uri: this.state.photo,
+                }}
+                style={{
+                  width: 200,
+                  height: 200,
+                  borderWidth: 5 
+                }}
+              />
                     <TouchableOpacity
                       style={styles.button1}
                       onPress={() => this.props.navigation.navigate("Camera")}>
