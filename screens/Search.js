@@ -38,10 +38,10 @@ class SearchScreen extends Component {
             this.setState({
                 isLoading: false,
                 listData: responseJson
-        })
+            })
         })
         .catch((error) => {
-                console.log(error);
+            console.log(error);
         })
     }
 
@@ -69,13 +69,13 @@ class SearchScreen extends Component {
             }
         })
         .then((responseJson) => {
-              this.setState({
-                  isLoading: false,
-                  listData: responseJson
-        })
+            this.setState({
+                isLoading: false,
+                listData: responseJson
+            })
         })
         .catch((error) => {
-                console.log(error);
+            console.log(error);
         })
     }
 
@@ -92,107 +92,106 @@ class SearchScreen extends Component {
 
     checkLoggedIn = async () => {
         const value = await AsyncStorage.getItem('@session_token');
-          if (value == null) {
+        if (value == null) {
             this.props.navigation.navigate('Login');
-      }
+        }
     };
     
     render() {
-      if (this.state.isLoading){
-        return (
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <ActivityIndicator/>
-            <Text>Loading..</Text>
-          </View>
-        );
-    }else{
-      return (
-          <SafeAreaView style={styles.container}>
-            <ScrollView>
-              <TextInput
-                style={styles.inputText1}
-                placeholder="Enter Name"
-                onChangeText={(lookForFriend) => this.setState({lookForFriend})}
-                value={this.state.lookForFriend}
-              />
-              <TouchableOpacity
-                style={styles.button1}
-                onPress={() => this.loadFriend()}>
-                <Text style={styles.text2}>Find</Text>
-              </TouchableOpacity>
-              <FlatList
-                data={this.state.listData}
-                renderItem={({item}) => (
-                  <View>
-                    <Text style={styles.text1}>{item.user_givenname} {item.user_familyname}</Text>
-                      <TouchableOpacity
-                        style={styles.button2}
-                        onPress={() => this.sendRequest(item.user_id)}>
-                        <Text style={styles.text2}>Send Request</Text>
-                      </TouchableOpacity>
-                  </View>
-                )}
-              />
-            </ScrollView>
-          </SafeAreaView>
-      );
+        if (this.state.isLoading){
+            return (
+                <View
+                    style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}>
+                        <ActivityIndicator/>
+                        <Text>Loading..</Text>
+                </View>
+            );
+        }else{
+            return (
+                <SafeAreaView style={styles.container}>
+                    <ScrollView>
+                        <TextInput
+                            style={styles.inputText1}
+                            placeholder="Enter Name"
+                            onChangeText={(lookForFriend) => this.setState({lookForFriend})}
+                            value={this.state.lookForFriend}
+                        />
+                        <TouchableOpacity
+                            style={styles.button1}
+                            onPress={() => this.loadFriend()}>
+                            <Text style={styles.text2}>Find</Text>
+                        </TouchableOpacity>
+                        <FlatList
+                            data={this.state.listData}
+                            renderItem={({item}) => (
+                                <View>
+                                    <Text style={styles.text1}>{item.user_givenname} {item.user_familyname}</Text>
+                                    <TouchableOpacity
+                                        style={styles.button2}
+                                        onPress={() => this.sendRequest(item.user_id)}>
+                                        <Text style={styles.text2}>Send Request</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            )}
+                        />
+                    </ScrollView>
+                </SafeAreaView>
+            );
+        }
     }
-  }
 }
 
 const styles = StyleSheet.create({
     container: {
-            flex: 1,
-            paddingHorizontal: 10,
-            backgroundColor: 'midnightblue'
+        flex: 1,
+        paddingHorizontal: 10,
+        backgroundColor: 'midnightblue'
     },
     inputText1: {
-            justifyContent: "center",
-            alignItems: "center",
-            paddingVertical: 20,
-            color: "white",
-            fontSize: 20,
-            fontWeight: "bold",
-            padding:5, 
-            borderWidth:1, 
-            margin:5
+        justifyContent: "center",
+        alignItems: "center",
+        paddingVertical: 20,
+        color: "white",
+        fontSize: 20,
+        fontWeight: "bold",
+        padding:5, 
+        borderWidth:1, 
+        margin:5
     },
     button1: {
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingVertical: 12,
-            paddingHorizontal: 32,
-            borderRadius: 4,
-            backgroundColor: 'midnightblue',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 4,
+        backgroundColor: 'midnightblue'
     },
     button2: {
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingVertical: 5,
-            paddingHorizontal: 32,
-            borderRadius: 2,
-            backgroundColor: 'midnightblue'
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 5,
+        paddingHorizontal: 32,
+        borderRadius: 2,
+        backgroundColor: 'midnightblue'
     },
     text1: {
-            paddingVertical: 5,
-            color: "white",
-            fontSize: 20,
-            fontWeight: "bold"
+        paddingVertical: 5,
+        color: "white",
+        fontSize: 20,
+        fontWeight: "bold"
     },
     text2: {
-            paddingVertical: 5,
-            textAlign: "center",
-            color: "white",
-            fontSize: 15,
-            fontWeight: "bold"
-        }
+        paddingVertical: 5,
+        textAlign: "center",
+        color: "white",
+        fontSize: 15,
+        fontWeight: "bold"
     }
-)
+})
 
 export default SearchScreen;

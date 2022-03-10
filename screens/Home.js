@@ -7,10 +7,10 @@ class HomeScreen extends Component {
         super(props);
     
         this.state = {
-          isLoading: true,
-          listData: [],
-          addPost: "",
-          amendPost: ""
+            isLoading: true,
+            listData: [],
+            addPost: "",
+            amendPost: ""
         }
     }
 
@@ -42,10 +42,10 @@ class HomeScreen extends Component {
             this.setState({
                 isLoading: false,
                 listData: responseJson
-        })
+            })
         })
         .catch((error) => {
-                console.log(error);
+            console.log(error);
         })
     }
 
@@ -65,26 +65,26 @@ class HomeScreen extends Component {
                 this.getAllPosts();
             }else if(response.status === 401){
                 this.props.navigation.navigate("Login");
-              }else if(response.status === 404){
+            }else if(response.status === 404){
                 throw 'Not Found';
-              }else if(response.status === 500){
+            }else if(response.status === 500){
                 throw 'Server Error';
             }else{
                 throw 'Something went wrong';
             }
         })
         .catch((error) => {
-                console.log(error);
+            console.log(error);
         })
     }
 
     likePost = async (user_id, post_id) => {
-      const value = await AsyncStorage.getItem('@session_token');
-      return fetch("http://localhost:3333/api/1.0.0/user/" + user_id + "/post/" + post_id + "/like", {
-          method: 'post',
-          'headers': {
-          'X-Authorization':  value,
-          }
+        const value = await AsyncStorage.getItem('@session_token');
+        return fetch("http://localhost:3333/api/1.0.0/user/" + user_id + "/post/" + post_id + "/like", {
+            method: 'post',
+            'headers': {
+            'X-Authorization':  value,
+            }
       })
       .then((response) => {
           if(response.status === 200){
@@ -102,9 +102,9 @@ class HomeScreen extends Component {
           }
       })
       .catch((error) => {
-              console.log(error);
+          console.log(error);
       })
-  }
+    }
 
     updatePost = async (post_id, post) => {
         const value = await AsyncStorage.getItem('@session_token');
@@ -116,7 +116,7 @@ class HomeScreen extends Component {
             'Content-Type': 'application/json'
             },
             body: JSON.stringify({text:post})
-          })
+        })
         .then((response) => {
             if(response.status === 200){
                 this.getAllPosts();
@@ -135,7 +135,7 @@ class HomeScreen extends Component {
             }
         })
         .catch((error) => {
-              console.log(error);
+            console.log(error);
         })
     }
 
@@ -152,19 +152,19 @@ class HomeScreen extends Component {
             if(response.status === 200){
                 this.getAllPosts();
             }else if(response.status === 401){
-              this.props.navigation.navigate("Login");
+                this.props.navigation.navigate("Login");
             }else if(response.status === 403){
-              throw 'Forbidden - you can only delete your own posts';
+                throw 'Forbidden - you can only delete your own posts';
             }else if(response.status === 404){
-              throw 'Not Found';
+                throw 'Not Found';
             }else if(response.status === 500){
-              throw 'Server Error';            
+                throw 'Server Error';            
             }else{
                 throw 'Something went wrong';
             }
         })
         .catch((error) => {
-                console.log(error);
+            console.log(error);
         })
     }
 
@@ -182,114 +182,112 @@ class HomeScreen extends Component {
 
     checkLoggedIn = async () => {
         const value = await AsyncStorage.getItem('@session_token');
-          if (value == null) {
+        if (value == null) {
             this.props.navigation.navigate('Login');
-      }
+        }
     };
 
     render() {
-      if (this.state.isLoading){
-        return (
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <ActivityIndicator/>
-            <Text>Loading...</Text>
-          </View>
-        );
-    }else{
-      return (
-          <SafeAreaView style={styles.container}>
-            <ScrollView>
-              <View>
-                <TextInput
-                  style={styles.inputText1}
-                  placeholder="Write your post..."
-                  onChangeText={(addPost) => this.setState({addPost})}
-                  value={this.state.addPost}
-                />
-                <TouchableOpacity
-                  style={styles.button1}
-                  onPress={() => this.postPost(this.state.addPost)}>
-                  <Text style={styles.text1}>Post</Text>
-                </TouchableOpacity>
-              </View>
-              <FlatList
-                data={this.state.listData}
-                renderItem={({item}) => (
-                  <View>                   
-                    <Text style={styles.text1}>
-                      {item.timestamp + '\n' + "New post from: " + item.author.first_name + " " + 
-                      item.author.last_name + " \n" + item.text + '\n' + "Likes: " + item.numLikes}
-                    </Text>
-                    <TouchableOpacity
-                      style={styles.button1}
-                      onPress={() => this.props.navigation.navigate("ViewSinglePost", {"user_id": item.user_id})}>
-                      <Text style={styles.text1}>View</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.button1}
-                      onPress={() => this.likePost(item.author.user_id, item.post_id)}>
-                      <Text style={styles.text1}>Like</Text>
-                    </TouchableOpacity>
-                    <TextInput
-                      style={styles.inputText1}
-                      placeholder="Update your post..."
-                      onChangeText={(amendPost) => this.setState({amendPost})}
-                      value={this.state.amendPost}
-                    />
-                    <TouchableOpacity
-                      style={styles.button1}
-                      onPress={() => this.updatePost(item.post_id, this.state.amendPost)}>
-                      <Text style={styles.text1}>Update</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.button1}
-                      onPress={() => this.deletePost(item.post_id)}>
-                      <Text style={styles.text1}>Delete</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-              />
-            </ScrollView>
-          </SafeAreaView>
-      )
+        if (this.state.isLoading){
+            return (
+                <View
+                    style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}>
+                        <ActivityIndicator/>
+                        <Text>Loading...</Text>
+                </View>
+            );
+        }else{
+            return (
+                <SafeAreaView style={styles.container}>
+                    <ScrollView>
+                        <View>
+                            <TextInput
+                                style={styles.inputText1}
+                                placeholder="Write your post..."
+                                onChangeText={(addPost) => this.setState({addPost})}
+                                value={this.state.addPost}
+                            />
+                            <TouchableOpacity
+                                style={styles.button1}
+                                onPress={() => this.postPost(this.state.addPost)}>
+                                <Text style={styles.text1}>Post</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <FlatList
+                            data={this.state.listData}
+                            renderItem={({item}) => (
+                                <View>                  
+                                    <Text style={styles.text1}>
+                                        {item.timestamp + '\n' + "New post from: " + item.author.first_name + " " + 
+                                        item.author.last_name + " \n" + item.text + '\n' + "Likes: " + item.numLikes}
+                                    </Text>
+                                    <TouchableOpacity
+                                        style={styles.button1}
+                                        onPress={() => this.props.navigation.navigate("ViewSinglePost", {"user_id": item.user_id})}>
+                                        <Text style={styles.text1}>View</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={styles.button1}
+                                        onPress={() => this.likePost(item.author.user_id, item.post_id)}>
+                                        <Text style={styles.text1}>Like</Text>
+                                    </TouchableOpacity>
+                                    <TextInput
+                                        style={styles.inputText1}
+                                        placeholder="Update your post..."
+                                        onChangeText={(amendPost) => this.setState({amendPost})}
+                                        value={this.state.amendPost}
+                                    />
+                                    <TouchableOpacity
+                                        style={styles.button1}
+                                        onPress={() => this.updatePost(item.post_id, this.state.amendPost)}>
+                                        <Text style={styles.text1}>Update</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={styles.button1}
+                                        onPress={() => this.deletePost(item.post_id)}>
+                                        <Text style={styles.text1}>Delete</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            )}
+                        />
+                    </ScrollView>
+                </SafeAreaView>
+            )
+        }
     }
-  }
 }
 
 const styles = StyleSheet.create({
-  container: {
-      flex: 1,
-      paddingHorizontal: 10,
-      backgroundColor: 'midnightblue'
-  },
-  button1: {
-      justifyContent: 'center',
-      borderRadius: 4,
-      backgroundColor: 'midnightblue'
-  },
-  text1: {
-      paddingVertical: 5,
-      textAlign: "center",
-      color: "white",
-      fontSize: 20,
-      fontWeight: "bold"
-  },
-  inputText1: {
-      color: "white",
-      fontSize: 20,
-      fontWeight: "bold",
-      padding:5, 
-      borderWidth:1, 
-      margin:5
-      }
-  }
-)
+    container: {
+        flex: 1,
+        paddingHorizontal: 10,
+        backgroundColor: 'midnightblue'
+    },
+    button1: {
+        justifyContent: 'center',
+        borderRadius: 4,
+        backgroundColor: 'midnightblue'
+    },
+    text1: {
+        paddingVertical: 5,
+        textAlign: "center",
+        color: "white",
+        fontSize: 20,
+        fontWeight: "bold"
+    },
+    inputText1: {
+        color: "white",
+        fontSize: 20,
+        fontWeight: "bold",
+        padding:5, 
+        borderWidth:1, 
+        margin:5
+    }
+})
 
-  export default HomeScreen;
-
+export default HomeScreen;

@@ -7,12 +7,12 @@ class AccountScreen extends Component {
         super(props);
     
         this.state = {
-          isLoading: true,
-          listData: [],
-          photo: null,
-          first_name: "",
-          last_name: "",
-          email: ""
+            isLoading: true,
+            listData: [],
+            photo: null,
+            first_name: "",
+            last_name: "",
+            email: ""
         }
     }
 
@@ -22,7 +22,7 @@ class AccountScreen extends Component {
         return fetch("http://localhost:3333/api/1.0.0/user/" + user_id, {
             method: 'get',
             'headers': {
-            'X-Authorization':  value,
+            'X-Authorization':  value
             }
         })
         .then((response) => {
@@ -45,7 +45,7 @@ class AccountScreen extends Component {
         })
         })
         .catch((error) => {
-                console.log(error);
+            console.log(error);
         })
     }
 
@@ -53,27 +53,26 @@ class AccountScreen extends Component {
       const value = await AsyncStorage.getItem('@session_token');
       const user_id = await AsyncStorage.getItem('@user_id');
       fetch("http://localhost:3333/api/1.0.0/user/" + user_id + "/photo", {
-        method: 'get',
-        headers: {
+          method: 'get',
+          headers: {
           'X-Authorization': value
-        }
+          }
       })
       .then((res) => {
-        return res.blob();
+          return res.blob();
       })
       .then((resBlob) => {
-        let data = URL.createObjectURL(resBlob);
-        this.setState({
+          let data = URL.createObjectURL(resBlob);
+          this.setState({
           photo: data,
-        });
+          });
       })
       .catch((err) => {
-        console.log("error", err)
+          console.log("error", err)
       });
     }
 
     updateUserInfo = async () => {
-
         if(this.state.email.match(/^\w+([.-]?\w+)@\w+([.-]?\w+)(.\w{2,3})+$/)){
             //email is valid
         }
@@ -95,7 +94,7 @@ class AccountScreen extends Component {
                 last_name: this.state.last_name,
                 email: this.state.email,
             })
-          })
+        })
         .then((response) => {
             if(response.status === 200){
                 this.getUserInfo();
@@ -118,38 +117,38 @@ class AccountScreen extends Component {
             this.props.navigation.navigate("Login");
         })
         .catch((error) => {
-              console.log(error);
+            console.log(error);
         })
     }
 
     logout = async () => {
-      let token = await AsyncStorage.getItem('@session_token');
-      await AsyncStorage.removeItem('@session_token');
-      return fetch("http://localhost:3333/api/1.0.0/logout", {
-          method: 'post',
-          headers: {
-              "X-Authorization": token
-          }
-      })
-      .then((response) => {
-          if(response.status === 200){
-              this.props.navigation.navigate("Login");
-          }else if(response.status === 401){
-              this.props.navigation.navigate("Login");
-          }else if(response.status === 500){
-              throw 'Server Error';
-          }else{
-              throw 'Something went wrong';
-          }
+        let token = await AsyncStorage.getItem('@session_token');
+        await AsyncStorage.removeItem('@session_token');
+        return fetch("http://localhost:3333/api/1.0.0/logout", {
+            method: 'post',
+            headers: {
+            "X-Authorization": token
+            }
+        })
+        .then((response) => {
+            if(response.status === 200){
+                this.props.navigation.navigate("Login");
+            }else if(response.status === 401){
+                this.props.navigation.navigate("Login");
+            }else if(response.status === 500){
+                throw 'Server Error';
+            }else{
+                throw 'Something went wrong';
+            }
         })
         .then((responseJson) => {
             console.log("User logged out: ", responseJson);
             this.props.navigation.navigate("Opening");
         })
         .catch((error) => {
-              console.log(error);
-      })
-  }
+            console.log(error);
+        })
+    }
 
     componentDidMount() {
         this.unsubscribe = this.props.navigation.addListener('focus', () => {
@@ -166,113 +165,111 @@ class AccountScreen extends Component {
 
     checkLoggedIn = async () => {
         const value = await AsyncStorage.getItem('@session_token');
-          if (value == null) {
+        if (value == null) {
             this.props.navigation.navigate('Login');
-      }
+        }
     };
 
     render() {
-      if (this.state.isLoading){
-        return (
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <ActivityIndicator/>
-            <Text>Loading...</Text>
-          </View>
-        );
-    }else{
-      return (
-          <SafeAreaView style={styles.container}>
-            <View>
-              <Image
-                source={{
-                  uri: this.state.photo,
-                }}
-                style={{
-                  width: 200,
-                  height: 200,
-                  borderWidth: 5 
-                }}
-              />
-                    <TouchableOpacity
-                      style={styles.button1}
-                      onPress={() => this.props.navigation.navigate("Camera")}>
-                      <Text style={styles.text1}>Upload Profile Pic</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.text1}> First Name: {this.state.listData['first_name']}</Text>
-                    <Text style={styles.text1}> Last Name: {this.state.listData['last_name']}</Text>
-                    <Text style={styles.text1}> Email: {this.state.listData['email']}</Text>
-                    <TextInput
-                      style={styles.inputText1}
-                      placeholder="Update your First Name..."
-                      onChangeText={(first_name) => this.setState({first_name})}
-                      value={this.state.first_name}
-                    />
-                    <TextInput
-                      style={styles.inputText1}
-                      placeholder="Update your Last Name..."
-                      onChangeText={(last_name) => this.setState({last_name})}
-                      value={this.state.last_name}
-                    />
-                    <TextInput
-                      style={styles.inputText1}
-                      placeholder="Update your Email..."
-                      onChangeText={(email) => this.setState({email})}
-                      value={this.state.email}
-                    />
-                    <TouchableOpacity
-                      style={styles.button1}
-                      onPress={() => this.updateUserInfo()}>
-                      <Text style={styles.text1}>Update</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.button1}
-                      onPress={() => this.logout()}>
-                      <Text style={styles.text1}>Log out</Text>
-                    </TouchableOpacity>
-            </View>
-          </SafeAreaView>
-      )
+        if (this.state.isLoading){
+            return (
+                <View
+                    style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}>
+                        <ActivityIndicator/>
+                        <Text>Loading...</Text>
+                </View>
+            );
+        }else{
+            return (
+                <SafeAreaView style={styles.container}>
+                    <View>
+                        <Image
+                          source={{
+                            uri: this.state.photo,
+                          }}
+                          style={{
+                            width: 200,
+                            height: 200,
+                            borderWidth: 5 
+                          }}
+                        />
+                        <TouchableOpacity
+                            style={styles.button1}
+                            onPress={() => this.props.navigation.navigate("Camera")}>
+                            <Text style={styles.text1}>Upload Profile Pic</Text>
+                        </TouchableOpacity>
+                        <Text style={styles.text1}> First Name: {this.state.listData['first_name']}</Text>
+                        <Text style={styles.text1}> Last Name: {this.state.listData['last_name']}</Text>
+                        <Text style={styles.text1}> Email: {this.state.listData['email']}</Text>
+                        <TextInput
+                            style={styles.inputText1}
+                            placeholder="Update your First Name..."
+                            onChangeText={(first_name) => this.setState({first_name})}
+                            value={this.state.first_name}
+                        />
+                        <TextInput
+                            style={styles.inputText1}
+                            placeholder="Update your Last Name..."
+                            onChangeText={(last_name) => this.setState({last_name})}
+                            value={this.state.last_name}
+                        />
+                        <TextInput
+                            style={styles.inputText1}
+                            placeholder="Update your Email..."
+                            onChangeText={(email) => this.setState({email})}
+                            value={this.state.email}
+                        />
+                        <TouchableOpacity
+                            style={styles.button1}
+                            onPress={() => this.updateUserInfo()}>
+                            <Text style={styles.text1}>Update</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.button1}
+                            onPress={() => this.logout()}>
+                            <Text style={styles.text1}>Log out</Text>
+                        </TouchableOpacity>
+                    </View>
+                </SafeAreaView>
+            )
+        }
     }
-  }
 }
 
 const styles = StyleSheet.create({
-  container: {
-      flex: 1,
-      paddingHorizontal: 10,
-      backgroundColor: 'midnightblue'
-  },
-  button1: {
-      justifyContent: 'center',
-      paddingVertical: 12,
-      paddingHorizontal: 32,
-      borderRadius: 4,
-      backgroundColor: 'midnightblue'
-  },
-  text1: {
-      paddingVertical: 5,
-      paddingHorizontal: 5,
-      textAlign: "left",
-      color: "white",
-      fontSize: 20,
-      fontWeight: "bold"
-  },
-  inputText1: {
-      color: "white",
-      fontSize: 20,
-      fontWeight: "bold",
-      padding:5, 
-      borderWidth:1, 
-      margin:5
-      }
-  }
-)
+    container: {
+        flex: 1,
+        paddingHorizontal: 10,
+        backgroundColor: 'midnightblue'
+    },
+    button1: {
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 4,
+        backgroundColor: 'midnightblue'
+    },
+    text1: {
+        paddingVertical: 5,
+        paddingHorizontal: 5,
+        textAlign: "left",
+        color: "white",
+        fontSize: 20,
+        fontWeight: "bold"
+    },
+    inputText1: {
+        color: "white",
+        fontSize: 20,
+        fontWeight: "bold",
+        padding:5, 
+        borderWidth:1, 
+        margin:5
+    }
+})
 
-  export default AccountScreen;
-
+export default AccountScreen;

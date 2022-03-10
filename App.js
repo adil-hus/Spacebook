@@ -10,16 +10,16 @@ import RestOfAppScreen from './screens/RestOfApp';
 const Stack = createNativeStackNavigator();
 
 function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Opening" component={OpeningScreen} options={{headerShown:false}} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Signup" component={SignupScreen} />
-        <Stack.Screen name="RestOfApp" component={RestOfAppScreen} options={{headerShown:false}}/>
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+    return (
+        <NavigationContainer>
+          <Stack.Navigator>
+              <Stack.Screen name="Opening" component={OpeningScreen} options={{headerShown:false}} />
+              <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen name="Signup" component={SignupScreen} />
+              <Stack.Screen name="RestOfApp" component={RestOfAppScreen} options={{headerShown:false}}/>
+          </Stack.Navigator>
+        </NavigationContainer>
+    );
 }
 
 export default App;

@@ -6,8 +6,8 @@ class OpeningScreen extends Component{
         return (
             <View style={styles.container}>
                 <Image
-                style={styles.logo}
-                source={require('./logo.png')}
+                    style={styles.logo}
+                    source={require('./logo.png')}
                 />
                 <TouchableOpacity
                     style={styles.button1}

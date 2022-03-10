@@ -7,14 +7,12 @@ import ViewFriendPostsScreen from './ViewFriendPosts';
 const Stack = createNativeStackNavigator();
 
 function StackNav2() {
-  return (
-  
-      <Stack.Navigator>
-        <Stack.Screen name="Friends" component={FriendsScreen} options={{headerShown:false}} />
-        <Stack.Screen name="ViewFriendPosts" component={ViewFriendPostsScreen} options={{headerShown:false}} />
-      </Stack.Navigator>
- 
-  );
+    return (
+        <Stack.Navigator>
+            <Stack.Screen name="Friends" component={FriendsScreen} options={{headerShown:false}} />
+            <Stack.Screen name="ViewFriendPosts" component={ViewFriendPostsScreen} options={{headerShown:false}} />
+        </Stack.Navigator>
+    );
 }
 
 export default StackNav2;

@@ -40,44 +40,44 @@ class FriendsScreen extends Component {
             this.setState({
                 isLoading: false,
                 listData: responseJson
-        })
+            })
         })
         .catch((error) => {
-                console.log(error);
+            console.log(error);
         })
     }
 
     sendToFriendAccount = async (id) => {
-      const value = await AsyncStorage.getItem('@session_token');
-      return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/post", {
-          method: 'get',
-          'headers': {
-          'X-Authorization':  value,
-          }
-      })
-      .then((response) => {
-          if(response.status === 200){
-              return response.json()
-          }else if(response.status === 401){
-              this.props.navigation.navigate("Login");
-          }else{
-              throw 'Something went wrong';
-          }
-      })
-      .then((responseJson) => {
-        console.log("Send user to friend: ", responseJson);
-        this.props.navigation.navigate("ViewFriendPosts");
-      })
-      .then((responseJson) => {
-          this.setState({
-              isLoading: false,
-              listData: responseJson
-      })
-      })
-      .catch((error) => {
-              console.log(error);
-      })
-  }
+        const value = await AsyncStorage.getItem('@session_token');
+        return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/post", {
+            method: 'get',
+            'headers': {
+            'X-Authorization':  value,
+            }
+        })
+        .then((response) => {
+            if(response.status === 200){
+                return response.json()
+            }else if(response.status === 401){
+                this.props.navigation.navigate("Login");
+            }else{
+                throw 'Something went wrong';
+            }
+        })
+        .then((responseJson) => {
+            console.log("Send user to friend: ", responseJson);
+            this.props.navigation.navigate("ViewFriendPosts");
+        })
+        .then((responseJson) => {
+            this.setState({
+                isLoading: false,
+                listData: responseJson
+            })
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+    }
 
     componentDidMount() {
         this.unsubscribe = this.props.navigation.addListener('focus', () => {
@@ -93,47 +93,47 @@ class FriendsScreen extends Component {
 
     checkLoggedIn = async () => {
         const value = await AsyncStorage.getItem('@session_token');
-          if (value == null) {
+        if (value == null) {
             this.props.navigation.navigate('Login');
-      }
+        }
     };
 
     render() {
-      if (this.state.isLoading){
-        return (
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <ActivityIndicator/>
-            <Text>Loading..</Text>
-          </View>
-        );
-      }else{
-        return (
-        <SafeAreaView style={styles.container}>
-          <View>
-            <FlatList
-              data={this.state.listData}
-              renderItem={({item}) => (
-              <View>
-              <Text style={styles.text1}>{item.user_givenname + " " + item.user_familyname}</Text>
-              <TouchableOpacity
-                style={styles.button1}
-                onPress={() => this.props.navigation.navigate("ViewFriendPosts", {"friend_id": item.user_id})}>
-                <Text style={styles.text1}>View</Text>
-              </TouchableOpacity>
-              </View>
-              )}
-            />
-          </View>
-        </SafeAreaView>
-      )
+        if (this.state.isLoading){
+            return (
+                <View
+                    style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}>
+                        <ActivityIndicator/>
+                        <Text>Loading...</Text>
+                </View>
+            );
+        }else{
+            return (
+                <SafeAreaView style={styles.container}>
+                    <View>
+                        <FlatList
+                            data={this.state.listData}
+                            renderItem={({item}) => (
+                                <View>
+                                    <Text style={styles.text1}>{item.user_givenname + " " + item.user_familyname}</Text>
+                                    <TouchableOpacity
+                                        style={styles.button1}
+                                        onPress={() => this.props.navigation.navigate("ViewFriendPosts", {"friend_id": item.user_id})}>
+                                        <Text style={styles.text1}>View</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            )}
+                        />
+                    </View>
+                </SafeAreaView>
+            )
+        }
     }
-  }
 }
 
 const styles = StyleSheet.create({
@@ -150,15 +150,14 @@ const styles = StyleSheet.create({
         fontWeight: "bold"
     },
     button1: {
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingVertical: 12,
-            paddingHorizontal: 32,
-            borderRadius: 4,
-            backgroundColor: 'midnightblue'
-        }
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 4,
+        backgroundColor: 'midnightblue'
     }
-)
+})
 
   export default FriendsScreen;
 
