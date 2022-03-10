@@ -14,7 +14,7 @@ class SignupScreen extends Component{
     }
 
     signup = () => {
-
+        // validation for signing up
         if(this.state.email.match(/^\w+([.-]?\w+)@\w+([.-]?\w+)(.\w{2,3})+$/)){
             //email is valid
         }

@@ -73,6 +73,7 @@ class AccountScreen extends Component {
     }
 
     updateUserInfo = async () => {
+      // validation for updating email
         if(this.state.email.match(/^\w+([.-]?\w+)@\w+([.-]?\w+)(.\w{2,3})+$/)){
             //email is valid
         }
